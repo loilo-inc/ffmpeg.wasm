@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-    - main
+    - default
   pull_request:
     branches: 
-    - main
+    - default
 
 jobs:
   build-core:
@@ -57,8 +57,11 @@ jobs:
       with:
         name: ffmpeg-core-mt
         path: packages/core-mt/dist/*
-  tests:
+  release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     needs:
       - build-core
       - build-core-mt
@@ -79,6 +82,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version-file: ./.node-version
+        registry-url: 'https://npm.pkg.github.com'
+        scope: '@loilo-inc'
     - name: Cache dependencies
       id: cache-dependencies
       uses: actions/cache@v4
@@ -89,5 +94,7 @@ jobs:
           node-modules-
     - name: Install dependencies
       run: npm install
-    - name: Run tests
-      run: npm test
+    - name: Publish package
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
