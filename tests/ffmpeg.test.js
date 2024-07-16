@@ -5,7 +5,7 @@ const genName = (name) => `[ffmpeg][${FFMPEG_TYPE}] ${name}`;
 const createFFmpeg = async () => {
   const ffmpeg = new FFmpeg();
   await ffmpeg.load({
-    coreURL: window.CORE_URL,
+    coreURL: CORE_URL,
     thread: FFMPEG_TYPE === "mt",
   });
   return ffmpeg;
