@@ -93,6 +93,8 @@ jobs:
         key: node-modules-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           node-modules-
+    - name: Install dependencies
+      run: npm install
     - name: Publish package
       run: npm publish --workspaces
       env:
