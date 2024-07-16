@@ -23,7 +23,7 @@ import type {
   FSNode,
   FileData,
 } from "./types";
-import { CORE_URL, FFMessageType } from "./const.js";
+import { FFMessageType } from "./const.js";
 import {
   ERROR_UNKNOWN_MESSAGE_TYPE,
   ERROR_NOT_LOADED,
@@ -50,11 +50,9 @@ const load = async ({
   const first = !ffmpeg;
 
   try {
-    if (!_coreURL) _coreURL = CORE_URL;
     // when web worker type is `classic`.
     importScripts(_coreURL);
   } catch {
-    if (!_coreURL) _coreURL = CORE_URL.replace('/umd/', '/esm/');
     // when web worker type is `module`.
     (self as WorkerGlobalScope).createFFmpegCore = (
       (await import(

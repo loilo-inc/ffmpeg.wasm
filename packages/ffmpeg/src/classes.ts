@@ -184,7 +184,7 @@ export class FFmpeg {
    * @returns `true` if ffmpeg core is loaded for the first time.
    */
   public load = (
-    { classWorkerURL, ...config }: FFMessageLoadConfig = {},
+    { classWorkerURL, ...config }: FFMessageLoadConfig,
     { signal }: FFMessageOptions = {}
   ): Promise<IsFirst> => {
     if (!this.#worker) {
