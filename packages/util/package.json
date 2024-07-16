@@ -1,7 +1,7 @@
 {
   "name": "@loilo-inc/ffmpeg-util",
   "version": "0.12.1",
-  "description": "browser utils for @ffmpeg/*",
+  "description": "browser utils for @loilo-inc/ffmpeg*",
   "main": "./dist/cjs/index.js",
   "types": "./dist/cjs/index.d.ts",
   "exports": {
