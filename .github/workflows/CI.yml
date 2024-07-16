@@ -83,6 +83,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version-file: ./.node-version
+        registry-url: 'https://npm.pkg.github.com'
+        scope: '@loilo-inc'
     - name: Cache dependencies
       id: cache-dependencies
       uses: actions/cache@v4
