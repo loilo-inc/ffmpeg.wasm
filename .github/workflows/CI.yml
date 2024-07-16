@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - default
+    - ci-test-20240717-2
   pull_request:
     branches: 
     - default
@@ -92,9 +93,7 @@ jobs:
         key: node-modules-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           node-modules-
-    - name: Install dependencies
-      run: npm install
     - name: Publish package
-      run: npm publish
+      run: npm publish --workspaces
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/loilo-inc/ffmpeg.wasm#readme",
   "publishConfig": {
+    "registry": "https://npm.pkg.github.com/",
     "access": "public"
   }
 }
