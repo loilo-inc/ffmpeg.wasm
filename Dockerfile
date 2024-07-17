@@ -23,14 +23,14 @@ RUN apt-get update && \
 # Build libvpx
 FROM emsdk-base AS libvpx-builder
 ENV LIBVPX_BRANCH=v1.14.1
-ADD https://github.com/webmproject/libvpx.git#$LIBVPX_BRANCH /src
+ADD "https://github.com/webmproject/libvpx.git#$LIBVPX_BRANCH" /src
 COPY build/libvpx.sh /src/build.sh
 RUN bash -x /src/build.sh
 
 # Build ogg
 FROM emsdk-base AS ogg-builder
 ENV OGG_BRANCH=v1.3.5
-ADD https://github.com/xiph/ogg.git#$OGG_BRANCH /src
+ADD "https://github.com/xiph/ogg.git#$OGG_BRANCH" /src
 COPY build/ogg.sh /src/build.sh
 RUN bash -x /src/build.sh
 
@@ -38,14 +38,14 @@ RUN bash -x /src/build.sh
 FROM emsdk-base AS theora-builder
 COPY --from=ogg-builder $INSTALL_DIR $INSTALL_DIR
 ENV THEORA_BRANCH=v1.1.1
-ADD https://github.com/xiph/theora.git#$THEORA_BRANCH /src
+ADD "https://github.com/xiph/theora.git#$THEORA_BRANCH" /src
 COPY build/theora.sh /src/build.sh
 RUN bash -x /src/build.sh
 
 # Build opus
 FROM emsdk-base AS opus-builder
 ENV OPUS_BRANCH=v1.5.2
-ADD https://github.com/xiph/opus.git#$OPUS_BRANCH /src
+ADD "https://github.com/xiph/opus.git#$OPUS_BRANCH" /src
 COPY build/opus.sh /src/build.sh
 RUN bash -x /src/build.sh
 
@@ -53,14 +53,14 @@ RUN bash -x /src/build.sh
 FROM emsdk-base AS vorbis-builder
 COPY --from=ogg-builder $INSTALL_DIR $INSTALL_DIR
 ENV VORBIS_BRANCH=v1.3.3
-ADD https://github.com/xiph/vorbis.git#$VORBIS_BRANCH /src
+ADD "https://github.com/xiph/vorbis.git#$VORBIS_BRANCH" /src
 COPY build/vorbis.sh /src/build.sh
 RUN bash -x /src/build.sh
 
 # Build zlib
 FROM emsdk-base AS zlib-builder
 ENV ZLIB_BRANCH=v1.3.1
-ADD https://github.com/madler/zlib.git#$ZLIB_BRANCH /src
+ADD "https://github.com/madler/zlib.git#$ZLIB_BRANCH" /src
 COPY build/zlib.sh /src/build.sh
 RUN bash -x /src/build.sh
 
@@ -68,7 +68,7 @@ RUN bash -x /src/build.sh
 FROM emsdk-base AS libwebp-builder
 COPY --from=zlib-builder $INSTALL_DIR $INSTALL_DIR
 ENV LIBWEBP_BRANCH=v1.4.0
-ADD https://github.com/webmproject/libwebp.git#$LIBWEBP_BRANCH /src
+ADD "https://github.com/webmproject/libwebp.git#$LIBWEBP_BRANCH" /src
 COPY build/libwebp.sh /src/build.sh
 RUN bash -x /src/build.sh
 
@@ -83,7 +83,7 @@ RUN bash -x /src/build.sh
 # Base ffmpeg image with dependencies and source code populated.
 FROM emsdk-base AS ffmpeg-base
 RUN embuilder build sdl2 sdl2-mt
-ADD https://github.com/FFmpeg/FFmpeg.git#$FFMPEG_VERSION /src
+ADD "https://github.com/FFmpeg/FFmpeg.git#$FFMPEG_VERSION" /src
 COPY --from=libvpx-builder $INSTALL_DIR $INSTALL_DIR
 COPY --from=opus-builder $INSTALL_DIR $INSTALL_DIR
 COPY --from=theora-builder $INSTALL_DIR $INSTALL_DIR
@@ -101,7 +101,7 @@ RUN bash -x /src/build.sh \
       --enable-libopus \
       --enable-zlib \
       --enable-libwebp \
-      --enable-libzimg 
+      --enable-libzimg
 
 # Build ffmpeg.wasm
 FROM ffmpeg-builder AS ffmpeg-wasm-builder
