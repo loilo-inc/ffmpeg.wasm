@@ -1,28 +1,19 @@
-name: CI
-
+name: ci
 on:
   push:
     branches:
-    - default
-    - ci-test-20240717-2
-  pull_request:
-    branches: 
-    - default
-
+    - "**"
 jobs:
   build-core:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
     - name: Update pkg-config database
       run: sudo ldconfig
-    - name: Setup Docker Buildx
+    - uses: docker/setup-buildx-action@v3
       id: buildx
-      uses: docker/setup-buildx-action@v3
-    - name: Cache build
+    - uses: actions/cache@v4
       id: cache-build
-      uses: actions/cache@v4
       with:
         path: build-cache-st
         key: build-cache-st-v1-${{ hashFiles('Dockerfile', 'Makefile', 'build/*') }}
@@ -30,22 +21,18 @@ jobs:
           build-cache-st-v1-
     - name: Build ffmpeg-core
       run: make prd EXTRA_ARGS="--cache-from=type=local,src=build-cache-st --cache-to=type=local,dest=build-cache-st,mode=max"
-    - name: Upload core
-      uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v4
       with:
         name: ffmpeg-core
         path: packages/core/dist/*
   build-core-mt:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v4
-    - name: Setup Docker Buildx
+    - uses: actions/checkout@v4
+    - uses: docker/setup-buildx-action@v3
       id: buildx
-      uses: docker/setup-buildx-action@v3
-    - name: Cache build
+    - uses: actions/cache@v4
       id: cache-build
-      uses: actions/cache@v4
       with:
         path: build-cache-mt
         key: build-cache-mt-v1-${{ hashFiles('Dockerfile', 'Makefile', 'build/*') }}
@@ -53,49 +40,36 @@ jobs:
           build-cache-v1-
     - name: Build ffmpet-core-mt
       run: make prd-mt EXTRA_ARGS="--cache-from=type=local,src=build-cache-mt --cache-to=type=local,dest=build-cache-mt,mode=max"
-    - name: Upload core-mt
-      uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v4
       with:
         name: ffmpeg-core-mt
         path: packages/core-mt/dist/*
-  release:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     needs:
       - build-core
       - build-core-mt
     steps:
-    - name: Checkout Source Code
-      uses: actions/checkout@v4
-    - name: Download ffmpeg-core
-      uses: actions/download-artifact@v4
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
       with:
         name: ffmpeg-core
         path: packages/core/dist
-    - name: Download ffmpeg-core-mt
-      uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v4
       with:
         name: ffmpeg-core-mt
         path: packages/core-mt/dist
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
       with:
         node-version-file: ./.node-version
         registry-url: 'https://npm.pkg.github.com'
         scope: '@loilo-inc'
-    - name: Cache dependencies
+    - uses: actions/cache@v4
       id: cache-dependencies
-      uses: actions/cache@v4
       with:
         path: node_modules
         key: node-modules-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           node-modules-
-    - name: Install dependencies
-      run: npm install
-    - name: Publish package
-      run: npm publish --workspaces
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: npm install
+    - run: npm run build
