@@ -109,6 +109,8 @@ jobs:
           node-modules-
     - run: npm install
     - run: npm version ${{ github.ref_name }} --no-git-tag-version --workspaces
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - run: npm publish --workspaces
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
