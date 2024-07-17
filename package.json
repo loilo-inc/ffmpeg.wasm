@@ -23,8 +23,7 @@
     "postinstall": "npm run build"
   },
   "workspaces": [
-    "packages/*",
-    "apps/*"
+    "packages/*"
   ],
   "devDependencies": {
     "chai": "^5.1.1",
